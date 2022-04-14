@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-primary">
+              <div class="card-body">
+                <h4 class="card-title">{{data.title}}</h4>
+                <p class="card-text">{{data.text}}</p>
+                <p class="card-text">{{data.createData}}</p>
+              </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

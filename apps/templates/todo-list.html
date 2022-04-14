@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    <div class="container mt-5 mb-5">
+        <div class="row">
+            <div class="col-12 mt-3">
+                <table class="table shodow table-bordered mb-3 mt-3">
+                    <div class="table-head">
+                        <form method="POST" id="post-data">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-10">
+                                    <input type="text" class="form-control" id='work'>
+                                </div>
+                                <div class="col-2">
+                                    <button class="btn btn-success w-100">Add</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <thead class="table-head">
+                        <tr class="text-align-center ">
+                            <td>id</td>
+                            <td>Work</td>
+                            <td>Start time</td>
+                            <td>Finish time</td>
+                            <td class="text-danger">Delete</td>
+                        </tr>
+                    </thead>
+                    <tbody class="border" id="list">
+                        {% for list in lists %}
+                            <tr>
+                                <th>{{list.id}}</th>
+                                <th>{{list.work}}</th>
+                                <th>{{list.startTime}}</th>
+                                <th>{{list.finsihTime}}</th>
+                                <th>
+                                    <form id='delete-post'>
+                                        <a href="{% url 'index' %}delete/{{list.id}}/one/" class="text-danger delete">Delete</a>
+                                    </form>
+                                </th>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+    <script type='text/javascript'>
+        $(document).on('submit' , '#post-data' , (event) => {
+            $.ajax({
+                type:"POST",
+                url:"{% url 'add' %}",
+                data:{
+                    work:$('#work').val(),
+                    csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val()
+                },
+                success: (data) => {
+                    console.log(data)
+                    let template = '';
+                    for (listData of data.data) {
+                    const {id , work , fTime,sTime} = listData;
+                        template += 
+                            `
+                            <tr>
+                                    <th>${id}</th>
+                                    <th>${work}</th>
+                                    <th>${fTime}</th>
+                                    <th>${fTime}</th>
+                                    <th>
+                                        <a href="{% url 'index' %}${id}" class="text-danger delete">Delete</a>
+                                    </th>
+                                </tr>
+                            `;
+                    }
+                    $('#list').html(template)
+                }
+            })
+        })
+    </script>
+{% endblock %}
